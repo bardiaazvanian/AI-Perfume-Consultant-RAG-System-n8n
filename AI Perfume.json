@@ -1,0 +1,139 @@
+{
+  "nodes": [
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.4,
+      "position": [-320, -32],
+      "id": "20320722-0995-4d0b-9b2a-82329866a45b",
+      "name": "When chat message received",
+      "webhookId": "1a5ca86e-72bb-41cf-b206-a955031030c0"
+    },
+    {
+      "parameters": {
+        "options": {
+          "systemMessage": "تو یک دستیار هوشمند فروش عطر هستی. وظیفه تو جستجو در لیست گوگل شیت و پیشنهاد بهترین عطر به مشتری است.\n\nقوانین جستجو و فیلتر کردن:\n\n1. دسترسی به داده‌ها:\n   - تو به کل لیست عطرها دسترسی داری. همیشه ابتدا لیست را بررسی کن.\n\n2. قیمت (Price):\n   - قیمت‌ها در شیت به \"ریال\" هستند (مثلاً 149625000).\n   - مشتری معمولاً قیمت را به \"تومان\" یا \"میلیون\" می‌گوید. خودت تبدیل را انجام بده (هر 10 ریال = 1 تومان).\n   - مثال: اگر مشتری گفت \"تا ۱۵ میلیون\"، یعنی تا سقف 150,000,000 ریال بگرد.\n\n3. جنسیت (Gender) - نکته مهم:\n   - ستون gender مقادیر فارسی دارد: \"مردانه\"، \"زنانه\"، \"زنانه و مردانه\".\n   - اگر مشتری \"مردانه\" خواست: هم عطرهای \"مردانه\" و هم \"زنانه و مردانه\" را پیشنهاد بده.\n   - اگر مشتری \"زنانه\" خواست: هم عطرهای \"زنانه\" و هم \"زنانه و مردانه\" را پیشنهاد بده.\n\n4. رایحه و فصل:\n   - ستون smell ("
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [-112, -32],
+      "id": "3079f4a2-f525-4ecc-bfbc-f8450b65c166",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "authentication": "serviceAccount",
+        "documentId": {
+          "__rl": true,
+          "value": "14RYzt114oOy394CKTD-aOjE7rNB3dDdlkfVgdPVoYJY",
+          "mode": "list",
+          "cachedResultName": "perfume test sheet",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/14RYzt114oOy394CKTD-aOjE7rNB3dDdlkfVgdPVoYJY/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/14RYzt114oOy394CKTD-aOjE7rNB3dDdlkfVgdPVoYJY/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.7,
+      "position": [144, 192],
+      "id": "7a9423de-6829-40b2-a76c-bea73af57152",
+      "name": "Get row perfume data",
+      "credentials": {
+        "googleApi": {
+          "id": "o9YNMulT19eXY4Sp",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [-16, 192],
+      "id": "51139818-116c-4fce-846e-b85c5a4eaf6a",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4.1-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [-192, 240],
+      "id": "62b7aafa-4082-4870-a4ce-12b39934b286",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "xCSCSbZfsNl5dgIn",
+          "name": "OpenAi account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row perfume data": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "8d3a45e7cf08159775b773491ff6ae9a9f61371b9ea8e360365dd4f72c7c3d2c"
+  }
+}
