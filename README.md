@@ -37,7 +37,7 @@ The system uses an **AI Agent** pattern within n8n:
 
 The core power of this project lies in the **Prompt Engineering**. The model is instructed to follow strict business logic:
 
-```text
+text
 You are a smart perfume sales assistant.
 RULES:
 1. ONLY recommend items found in the Google Sheet.
